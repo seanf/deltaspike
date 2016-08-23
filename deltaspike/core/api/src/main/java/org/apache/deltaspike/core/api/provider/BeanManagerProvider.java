@@ -290,6 +290,7 @@ public class BeanManagerProvider implements Extension
         }
 
         bmpSingleton.bmInfos.remove(ClassUtils.getClassLoader(null));
+        bmpSingleton = null;
     }
 
     /**
