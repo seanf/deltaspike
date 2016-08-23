@@ -26,6 +26,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorFactory;
 import javax.validation.Validation;
 
+import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.apache.deltaspike.core.util.ReflectionUtils;
 
@@ -58,6 +59,12 @@ public class CDIAwareConstraintValidatorFactory implements
     @Override
     public <T extends ConstraintValidator<?, ?>> T getInstance(Class<T> validatorClass)
     {
+        if (!BeanManagerProvider.isActive())
+        {
+            log.fine("DeltaSpike/CDI not active; delegating to DefaultProvider for class " +
+                    validatorClass.getCanonicalName());
+            return delegate.getInstance(validatorClass);
+        }
         T resolvedInst = BeanProvider.getContextualReference(validatorClass, true);
         if (resolvedInst == null)
         {
